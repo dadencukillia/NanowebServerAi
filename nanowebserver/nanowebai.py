@@ -105,6 +105,7 @@ class Serv:
             snd = self.connected(d_received)
             log("Відправлено: " + str(len(str(snd))) + " байтів", tabs=2)
             log(str(snd), tabs=2)
+            print(self.generateResponse(snd[0], snd[1]))
             client.send(self.generateResponse(snd[0], snd[1]))
             client.close()
             log("Клієнт від'єднався!", tabs=2)
@@ -128,7 +129,7 @@ class Serv:
 
     def generateResponse(self, status, content):
         return str("HTTP/1.0 " + str(status) + " " + ("OK " if status == 200 else "BAD") + self.header + str(
-            len(str(content))) + "\r\n\r\n" + str(content)).encode()
+            len(content.encode())) + "\r\n\r\n" + str(content)).encode()
 
 
 def log(message: str, msgType: str = "info", tabs: int = 0) -> None:
