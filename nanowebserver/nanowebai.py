@@ -105,7 +105,6 @@ class Serv:
             snd = self.connected(d_received)
             log("Відправлено: " + str(len(str(snd))) + " байтів", tabs=2)
             log(str(snd), tabs=2)
-            print(self.generateResponse(snd[0], snd[1]))
             client.send(self.generateResponse(snd[0], snd[1]))
             client.close()
             log("Клієнт від'єднався!", tabs=2)
