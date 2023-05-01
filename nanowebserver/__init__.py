@@ -1,1 +1,1 @@
-from nanowebai import NanoWeb, imfile2nparray
+from .nanowebai import NanoWeb, imfile2nparray
