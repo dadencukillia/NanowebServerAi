@@ -92,8 +92,8 @@ class Checker:
         self.__check_round = check_round
         self.__check_alpha = check_alpha
         self.__regex = regex
-        self.__check_has = check_has
-        self.__check_not_has = check_not_has
+        self.__check_has = list(check_has)
+        self.__check_not_has = list(check_not_has)
         self.__check_exists = check_exists
         self.__check_picture = check_picture
 
@@ -136,37 +136,145 @@ class Checker:
         return True
 
     def toBool(self) -> bool:
+        """
+        Same as .check() method!
+        """
         return self.__bool__()
 
     def check(self) -> bool:
+        """
+        Same as .toBool() method!
+        """
         return self.__bool__()
 
     def getValue(self) -> any:
+        """
+        Example:
+
+        >>> print(Checker("just text").getValue())
+        just text
+        """
         return self.__value
 
     def getMaxLength(self) -> int:
+        """
+        Example:
+
+        >>> print(Checker("just text", max_length=20).getMaxLength())
+        20
+        """
         return self.__max_length
 
     def getMinLength(self) -> int:
+        """
+        Example:
+
+        >>> print(Checker("just text", min_length=10).getMinLength())
+        10
+        """
         return self.__min_length
 
     def setValue(self, value: any) -> None:
+        """
+        Example:
+
+        >>> print(Checker("small", min_length=6).toBool())
+        False
+
+        >>> print(Checker("small", min_length=6).setValue("just text").toBool())
+        True
+
+        >>> print(Checker("old text").getValue())
+        old text
+
+        >>> print(Checker("old text").setValue("new text").getValue())
+        new text
+        """
         self.__value = value
         return self
 
     def setMaxLength(self, value: int) -> None:
+        """
+        Example:
+
+        >>> print(Checker("just text", max_length=20).getMaxLength())
+        20
+
+        >>> print(Checker("just text", max_length=20).setMaxLength(30).getMaxLength())
+        30
+
+        >>> print(Checker("just text", max_length=2).toBool())
+        False
+
+        >>> print(Checker("just text", max_length=2).setMaxLength(20).toBool())
+        True
+
+        >>> print(Checker("just text").toBool())
+        True
+
+        >>> print(Checker("just text").setMaxLength(2).toBool())
+        False
+        """
         self.__max_length = value
         return self
 
     def setMinLength(self, value: int) -> None:
+        """
+        Example:
+
+        >>> print(Checker("just text", min_length=20).getMinLength())
+        20
+
+        >>> print(Checker("just text", min_length=20).setMinLength(30).getMinLength())
+        30
+
+        >>> print(Checker("just text", min_length=2).toBool())
+        True
+
+        >>> print(Checker("just text", min_length=2).setMinLength(20).toBool())
+        False
+
+        >>> print(Checker("just text").toBool())
+        True
+
+        >>> print(Checker("just text").setMinLength(20).toBool())
+        False
+        """
         self.__min_length = value
         return self
 
     def setCheckDigit(self, value: bool) -> None:
+        """
+        Example:
+
+        >>> print(Checker("it is not number").toBool())
+        True
+
+        >>> print(Checker("it is not number").setCheckDigit(True).toBool())
+        False
+
+        >>> print(Checker("20").setCheckDigit(True).toBool())
+        True
+        """
         self.__check_digit = value
         return self
 
     def setCheckRound(self, value: bool) -> None:
+        """
+        Example:
+
+        >>> print(Checker(2.5).toBool())
+        True
+
+        >>> print(Checker(2.5).setCheckRound(True).toBool())
+        False
+
+        >>> print(Checker(2).setCheckRound(True).toBool())
+        True
+
+        >>> print(Checker(2.0).setCheckRound(True).toBool())
+        True
+        """
         self.__check_round = value
         return self
 
@@ -183,14 +291,54 @@ class Checker:
         return self
 
     def setCheckHas(self, *args) -> None:
+        """
+        Example:
+
+        >>> print(Checker("Hello, world!").toBool())
+        True
+
+        >>> print(Checker("Hello, world!").setCheckHas("e", "o", "l").toBool())
+        True
+
+        >>> print(Checker("Hello, world!").setCheckHas("e", "o", "l", "h").toBool())
+        False
+        """
         self.__check_has = list(args)
         return self
 
     def setCheckNotHas(self, *args) -> None:
+        """
+        Example:
+
+        >>> print(Checker("Hello, world!").toBool())
+        True
+
+        >>> print(Checker("Hello, world!").setCheckHas("e", "o", "l").toBool())
+        False
+
+        >>> print(Checker("Hello, world!").setCheckHas("e", "o", "l", "h").toBool())
+        False
+
+        >>> print(Checker("Hello, world!").setCheckHas("p", "O", "D", "h").toBool())
+        True
+        """
         self.__check_not_has = list(args)
         return self
 
     def checkExists(self, value: bool) -> None:
+        """
+        >>> print(Checker(None).toBool())
+        True
+
+        >>> print(Checker("DD").toBool())
+        True
+
+        >>> print(Checker(None).checkExists(True))
+        False
+
+        >>> print(Checker("DD").checkExists(True))
+        True
+        """
         self.__check_exists = value
         return self
 
