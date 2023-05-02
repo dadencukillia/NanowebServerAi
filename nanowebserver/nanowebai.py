@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import socket, base64, io
+import socket, base64, io, re
 import numpy as np
 from datetime import datetime
 from os import environ  # VUPPY_IP, VUPPY_PORT, VUPPY_LMBYTES
@@ -8,24 +8,26 @@ from colorama import Fore
 from colorama import init as cinit
 from PIL import Image
 from json import loads
+
 cinit()
 
 DEFAULT_BYTESLIMIT = 56000000  # bytes
 DEFAULT_SERVERIP = "127.0.0.1"
 DEFAULT_SERVERPORT = 8787
 
+
 def imfile2nparray(Base64image: bytes):
     """
     Examples:
 
-    >> imfile2nparray(WholeBase64image)
+    >>> imfile2nparray(WholeBase64image)
     {
         "ok":True,
         "nparray":[...],
         "error":None
     }
 
-    >> imfile2nparray(DamagedBase64image)
+    >>> imfile2nparray(DamagedBase64image)
     {
         "ok":False,
         "nparray":None,
@@ -39,22 +41,179 @@ def imfile2nparray(Base64image: bytes):
             )
         )
         return {
-            "ok":True,
-            "nparray":output,
-            "error":None
+            "ok": True,
+            "nparray": output,
+            "error": None
         }
     except Exception as ex:
         return {
-            "ok":False,
-            "nparray":None,
-            "error":ex
+            "ok": False,
+            "nparray": None,
+            "error": ex
         }
+
+
+class Checker:
+    """
+    args:
+    value: any, max_length: int, min_length: int, check_digit: bool, check_round: bool, check_alpha: bool, regex: str, check_has: list, check_not_has: list, check_exists: bool, check_picture: bool
+
+    Examples:
+
+    >>> if Checker("string").setMaxLength(20).setMinLength(2): print("Hello!")
+    Hello
+
+    >>> if Checker("string").setMaxLength(5).setMinLength(2): print("Hello!")
+
+    >>> if Checker("string").setMaxLength(20).setMinLength(7): print("Hello!")
+
+    >>> print(Checker("string").setMaxLength(20).check())
+    True
+    """
+    __value = ""
+    __max_length = None
+    __min_length = None
+    __check_digit = False
+    __check_round = False
+    __check_alpha = False
+    __regex = None
+    __check_has = []
+    __check_not_has = []
+    __check_exists = False
+    __check_picture = False
+
+    def __init__(self, value: any, max_length: int = None, min_length: int = None, check_digit: bool = False,
+                 check_round: bool = False, check_alpha: bool = False, regex: str = None, check_has: list = [],
+                 check_not_has: list = [], check_exists: bool = False, check_picture: bool = False):
+        self.__value = value
+        self.__max_length = max_length
+        self.__min_length = min_length
+        self.__check_digit = check_digit
+        self.__check_round = check_round
+        self.__check_alpha = check_alpha
+        self.__regex = regex
+        self.__check_has = check_has
+        self.__check_not_has = check_not_has
+        self.__check_exists = check_exists
+        self.__check_picture = check_picture
+
+    def __str__(self) -> str:
+        return "<check:" + str(self.__bool__()) + " " + str(self.__value) + ">"
+
+    def __bool__(self) -> bool:
+        if self.__max_length is not None and (
+                type(self.__max_length) != int or len(str(self.__value)) > self.__max_length):
+            return False
+        if self.__min_length is not None and (
+                type(self.__min_length) != int or len(str(self.__value)) < self.__min_length):
+            return False
+        if self.__check_digit and not str(self.__value).isdigit():
+            return False
+        if self.__check_round:
+            try:
+                if float(self.__value) != int(self.__value):
+                    return False
+            except:
+                return False
+        if self.__check_alpha and not str(self.__value).isalpha():
+            return False
+        if self.__regex:
+            try:
+                if not re.fullmatch(re.compile(self.__regex), str(self.__value)):
+                    return False
+            except:
+                return False
+        if self.__check_has and (not (type(self.__check_has) == list or type(self.__check_has) == tuple) or False in [
+            bool(i in self.__value) for i in self.__check_has]):
+            return False
+        if self.__check_not_has and (
+                not (type(self.__check_not_has) == list or type(self.__check_not_has) == tuple) or True in [
+            bool(i in self.__value) for i in self.__check_not_has]):
+            return False
+        if self.__check_exists and not self.__value:
+            return False
+        if self.__check_picture and imfile2nparray(self.__value)["ok"] == False:
+            return False
+        return True
+
+    def toBool(self) -> bool:
+        return self.__bool__()
+
+    def check(self) -> bool:
+        return self.__bool__()
+
+    def getValue(self) -> any:
+        return self.__value
+
+    def getMaxLength(self) -> int:
+        return self.__max_length
+
+    def getMinLength(self) -> int:
+        return self.__min_length
+
+    def setValue(self, value: any) -> None:
+        self.__value = value
+        return self
+
+    def setMaxLength(self, value: int) -> None:
+        self.__max_length = value
+        return self
+
+    def setMinLength(self, value: int) -> None:
+        self.__min_length = value
+        return self
+
+    def setCheckDigit(self, value: bool) -> None:
+        self.__check_digit = value
+        return self
+
+    def setCheckRound(self, value: bool) -> None:
+        self.__check_round = value
+        return self
+
+    def setCheckAlpha(self, value: bool) -> None:
+        self.__check_alpha = value
+        return self
+
+    def offRegex(self) -> None:
+        self.__regex = None
+        return self
+
+    def setRegex(self, regex: str) -> None:
+        self.__regex = regex
+        return self
+
+    def setCheckHas(self, value: tuple) -> None:
+        self.__check_has = value
+        return self
+
+    def addCheckHas(self, value: tuple) -> None:
+        self.__check_has.append(value)
+        return self
+
+    def setCheckNotHas(self, value: tuple) -> None:
+        self.__check_not_has = value
+        return self
+
+    def addCheckNotHas(self, value: tuple) -> None:
+        self.__check_not_has.append(value)
+        return self
+
+    def checkExists(self, value: bool) -> None:
+        self.__check_exists = value
+        return self
+
+    def checkPicture(self, value: bool) -> None:
+        self.__check_picture = value
+        return self
+
 
 def test(data):
     return 'AI replies "Hello!"'
 
 
 func = test
+
 
 class NanoWeb:
     def __init__(self, func):
@@ -68,6 +227,7 @@ class NanoWeb:
         """
         globals()["func"] = func
         init()
+
 
 class Serv:
     header = "\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\nContent-Type: text/plain\r\nContent-Length: "
@@ -133,7 +293,7 @@ class Serv:
 
 def log(message: str, msgType: str = "info", tabs: int = 0) -> None:
     print((" " * tabs) + Fore.YELLOW + "[" + Fore.BLUE + msgType.upper() + (
-                " " * max(8 - len(msgType), 1)) + Fore.GREEN + datetime.now().strftime(
+            " " * max(8 - len(msgType), 1)) + Fore.GREEN + datetime.now().strftime(
         "%m.%d %H:%M:%S") + Fore.YELLOW + "] " + Fore.RESET + message)
 
 
@@ -150,7 +310,7 @@ def init():
         bytes_limit = environ["VUPPY_LMBYTES"]
     else:
         bytes_limit = DEFAULT_BYTESLIMIT
-    log("Запуск сервера... ("+str(ip)+":"+str(port)+")", msgType="SYSTEM")
+    log("Запуск сервера... (" + str(ip) + ":" + str(port) + ")", msgType="SYSTEM")
     Serv(port=port, bytes_limit=bytes_limit, ip=ip).start()
 
 
