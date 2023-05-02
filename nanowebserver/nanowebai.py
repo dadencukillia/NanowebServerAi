@@ -123,12 +123,11 @@ class Checker:
                     return False
             except:
                 return False
-        if self.__check_has and (not (type(self.__check_has) == list or type(self.__check_has) == tuple) or False in [
-            bool(i in self.__value) for i in self.__check_has]):
+        if self.__check_has and (not (type(self.__check_has) == list or type(self.__check_has) == tuple) or False in
+                                 [bool(i in self.__value) for i in self.__check_has]):
             return False
-        if self.__check_not_has and (
-                not (type(self.__check_not_has) == list or type(self.__check_not_has) == tuple) or True in [
-            bool(i in self.__value) for i in self.__check_not_has]):
+        if self.__check_not_has and (not (type(self.__check_not_has) == list or type(self.__check_not_has) == tuple) or True in
+                                    [bool(i in self.__value) for i in self.__check_not_has]):
             return False
         if self.__check_exists and not self.__value:
             return False
@@ -183,20 +182,12 @@ class Checker:
         self.__regex = regex
         return self
 
-    def setCheckHas(self, value: tuple) -> None:
-        self.__check_has = value
+    def setCheckHas(self, *args) -> None:
+        self.__check_has = list(args)
         return self
 
-    def addCheckHas(self, value: tuple) -> None:
-        self.__check_has.append(value)
-        return self
-
-    def setCheckNotHas(self, value: tuple) -> None:
-        self.__check_not_has = value
-        return self
-
-    def addCheckNotHas(self, value: tuple) -> None:
-        self.__check_not_has.append(value)
+    def setCheckNotHas(self, *args) -> None:
+        self.__check_not_has = list(args)
         return self
 
     def checkExists(self, value: bool) -> None:
