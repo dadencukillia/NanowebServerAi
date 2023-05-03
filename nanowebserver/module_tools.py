@@ -1,8 +1,12 @@
 from __future__ import annotations
 from PIL import Image
-from typing import Self
 import numpy as np
 import base64, io, re
+
+try:
+    from typing import Self
+except:
+    from typing_extensions import Self
 
 def imfile2nparray(Base64image: bytes):
     """
