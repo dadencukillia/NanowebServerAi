@@ -336,3 +336,18 @@ class Checker:
     def checkPicture(self, value: bool) -> Self:
         self.__check_picture = value
         return self
+
+    def print(self) -> Self:
+        """
+        >>> Checker(None).toBool().print()
+        True
+
+        >>> Checker(None).checkExists(True).print()
+        False
+
+        >>> Checker(None).checkExists(True).print().setValue("Hello!").print()
+        False
+        True
+        """
+        print(self.toBool())
+        return self
