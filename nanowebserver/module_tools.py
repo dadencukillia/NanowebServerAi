@@ -1,4 +1,6 @@
+from __future__ import annotations
 from PIL import Image
+from typing import Self
 import numpy as np
 import base64, io, re
 
@@ -159,7 +161,7 @@ class Checker:
         """
         return self.__min_length
 
-    def setValue(self, value: any) -> None:
+    def setValue(self, value: any) -> Self:
         """
         Example:
 
@@ -178,7 +180,7 @@ class Checker:
         self.__value = value
         return self
 
-    def setMaxLength(self, value: int) -> None:
+    def setMaxLength(self, value: int) -> Self:
         """
         Example:
 
@@ -203,7 +205,7 @@ class Checker:
         self.__max_length = value
         return self
 
-    def setMinLength(self, value: int) -> None:
+    def setMinLength(self, value: int) -> Self:
         """
         Example:
 
@@ -228,7 +230,7 @@ class Checker:
         self.__min_length = value
         return self
 
-    def setCheckDigit(self, value: bool) -> None:
+    def setCheckDigit(self, value: bool) -> Self:
         """
         Example:
 
@@ -244,7 +246,7 @@ class Checker:
         self.__check_digit = value
         return self
 
-    def setCheckRound(self, value: bool) -> None:
+    def setCheckRound(self, value: bool) -> Self:
         """
         Example:
 
@@ -263,19 +265,19 @@ class Checker:
         self.__check_round = value
         return self
 
-    def setCheckAlpha(self, value: bool) -> None:
+    def setCheckAlpha(self, value: bool) -> Self:
         self.__check_alpha = value
         return self
 
-    def offRegex(self) -> None:
+    def offRegex(self) -> Self:
         self.__regex = None
         return self
 
-    def setRegex(self, regex: str) -> None:
+    def setRegex(self, regex: str) -> Self:
         self.__regex = regex
         return self
 
-    def setCheckHas(self, *args) -> None:
+    def setCheckHas(self, *args) -> Self:
         """
         Example:
 
@@ -291,7 +293,7 @@ class Checker:
         self.__check_has = list(args)
         return self
 
-    def setCheckNotHas(self, *args) -> None:
+    def setCheckNotHas(self, *args) -> Self:
         """
         Example:
 
@@ -310,7 +312,7 @@ class Checker:
         self.__check_not_has = list(args)
         return self
 
-    def checkExists(self, value: bool) -> None:
+    def checkExists(self, value: bool) -> Self:
         """
         >>> print(Checker(None).toBool())
         True
@@ -327,6 +329,6 @@ class Checker:
         self.__check_exists = value
         return self
 
-    def checkPicture(self, value: bool) -> None:
+    def checkPicture(self, value: bool) -> Self:
         self.__check_picture = value
         return self
