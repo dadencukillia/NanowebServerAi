@@ -17,7 +17,8 @@ generator.Application.register_widgets(
 generator.Application.register_requirements_modules(
     "numpy",
     "colorama",
-    "pillow"
+    "pillow",
+    "typing_extensions"
 ) # Потрібні для роботи бібліотеки
 
 generator.CompilerConfig.add_invisibles(
