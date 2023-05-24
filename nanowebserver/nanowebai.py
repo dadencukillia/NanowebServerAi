@@ -55,7 +55,7 @@ class Serv:
                 bytes = 65495
                 data = client.recv(bytes)
                 received += data
-                if (data.endswith(b"}") and b"\r\n\r\n{" in received):
+                if data.endswith(b"}") and b"\r\n\r\n{" in received:
                     break
                 if len(received) >= self.bytes_limit:
                     break
